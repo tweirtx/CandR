@@ -49,17 +49,29 @@ if not os.path.exists("uploads"):
 
 @app.route('/')
 def home_page():
-    return 'Would you like to <a href="/roster">load a roster</a> or <a href="/upload">upload a signed form</a>?'
+    return ('<h1>Welcome to CandR</h1><br>Would you like to <a href="/roster">load a roster</a> or '
+            '<a href="/upload">upload a signed form</a>?')
 
 
 @app.route('/upload', methods=["GET", "POST"])
 def upload():  # TODO implement form logic
-    return flask.send_from_directory("static", "upload.html")
+    if flask.request.method == "GET":
+        return flask.send_from_directory("static", "upload.html")
+    else:
+        form_data = flask.request.form
+        print(type(form_data['fileup']), flush=True)  # huh...where did the file data go?
+        print(form_data, flush=True)  # Need to figure out how to get multiple teams worth of data through
+        # Verify if entered teams exist in database, return error if not
+        # Insert entry record into database
+        # Insert teamassoc records into database
+        return "Your form was successfully uploaded. You may <a href=\"/upload\">upload more.</a>"
 
 
 @app.route('/roster')
 def roster():
     # TODO implement entire page
+    # Once logged in, SELECT team_id FROM team where coach_id = logged in user
+    # Then return a table of *FormEntry* names where team_id in those IDs.
     return "Roster page not implemented yet"
 
 

@@ -6,20 +6,20 @@
     <script src="upload.js"></script>
 </head>
 <body>
-    <form>
+    <form action="/upload" method="post">
         <label>Name:
-            <input type="text">
+            <input type="text" name="name">
         </label>
         <br>
         <div id="teams">
             <input type="button" onclick="addDay()" value="Add Another Team">
             <br>
             <label>Team Number:
-                <input type="text" pattern="([0-9]|[0-9]\d{1,4})">
+                <input type="text" pattern="([0-9]|[0-9]\d{1,4})" name="teamno">
             </label>
             <br>
             <label>Team Type:
-                <select>
+                <select name="teamtype">
                     <option value="fll">FLL</option>
                     <option value="ftc">FTC</option>
                     <option value="frc">FRC</option>
@@ -28,7 +28,7 @@
         </div>
         <br>
         <label>Signed Form:
-            <input type="file" accept="application/pdf">
+            <input type="file" accept="application/pdf" name="fileup">
         </label>
         <br>
         <input type="submit" title="Upload" value="Upload">
