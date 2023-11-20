@@ -42,6 +42,9 @@ class FormToTeam(Base):
 
 Base.metadata.create_all(engine)
 
+if not os.path.exists("uploads"):
+    os.mkdir("uploads")
+
 
 @app.route('/')
 def home_page():
