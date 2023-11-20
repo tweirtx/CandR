@@ -1,5 +1,6 @@
 import os
 
+import flask
 from flask import Flask
 from sqlalchemy import Column, ForeignKey, Integer, String, create_engine
 from sqlalchemy.orm import declarative_base
@@ -52,12 +53,13 @@ def home_page():
 
 
 @app.route('/upload', methods=["GET", "POST"])
-def upload():
-    return "Upload page not implemented yet"
+def upload():  # TODO implement form logic
+    return flask.send_from_directory("static", "upload.html")
 
 
 @app.route('/roster')
 def roster():
+    # TODO implement entire page
     return "Roster page not implemented yet"
 
 
