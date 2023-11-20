@@ -63,5 +63,10 @@ def roster():
     return "Roster page not implemented yet"
 
 
+@app.route("/upload.js")
+def upload_js():
+    return flask.send_from_directory("static", "upload.js")
+
+
 if __name__ == '__main__':
     app.run(host="0.0.0.0")

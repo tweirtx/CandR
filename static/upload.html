@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title>Upload Signed Form</title>
+    <script src="upload.js"></script>
 </head>
 <body>
     <form>
@@ -10,18 +11,21 @@
             <input type="text">
         </label>
         <br>
-        {#   TODO: support multiple team number associations    #}
-        <label>Team Number:
-            <input type="text" pattern="([0-9]|[0-9]\d{1,4})">
-        </label>
-        <br>
-        <label>Team Type:
-            <select>
-                <option value="fll">FLL</option>
-                <option value="ftc">FTC</option>
-                <option value="frc">FRC</option>
-            </select>
-        </label>
+        <div id="teams">
+            <input type="button" onclick="addDay()" value="Add Another Team">
+            <br>
+            <label>Team Number:
+                <input type="text" pattern="([0-9]|[0-9]\d{1,4})">
+            </label>
+            <br>
+            <label>Team Type:
+                <select>
+                    <option value="fll">FLL</option>
+                    <option value="ftc">FTC</option>
+                    <option value="frc">FRC</option>
+                </select>
+            </label>
+        </div>
         <br>
         <label>Signed Form:
             <input type="file" accept="application/pdf">
