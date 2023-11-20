@@ -22,7 +22,7 @@ class Team(Base):
     team_name = Column(String)
     team_number = Column(String)
     team_program = Column(String)
-    coach_id = Column(String, ForeignKey("coach.coach_id"))
+    coach_id = Column(Integer, ForeignKey("coach.coach_id"))
 
 
 class FormEntry(Base):
@@ -38,6 +38,9 @@ class FormToTeam(Base):
     assoc_id = Column(Integer, primary_key=True, autoincrement=True)
     entry_id = Column(Integer, ForeignKey("form_entry.entry_id"))
     team_id = Column(Integer, ForeignKey("team.team_id"))
+
+
+Base.metadata.create_all(engine)
 
 
 @app.route('/')
