@@ -60,7 +60,15 @@ def upload():
     else:
         form_data = flask.request.form
         print(type(form_data['fileup']), flush=True)  # huh...where did the file data go?
-        print(form_data, flush=True)  # Need to figure out how to get multiple teams worth of data through
+        print(form_data, flush=True)
+        teams = []
+        name = form_data.get("name")
+        for key in form_data.keys():
+            if key.startswith("teamno"):
+                team_no = form_data.get(key)
+                team_type = form_data.get("teamtype" + str(key[6:]))
+                teams.append({team_no: team_type})
+        print("Name and teams", name, teams, flush=True)
         # Verify if entered teams exist in database, return error if not
         # Insert entry record into database
         # Insert teamassoc records into database
