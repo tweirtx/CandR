@@ -8,6 +8,7 @@ from sqlalchemy import Column, ForeignKey, Integer, String, create_engine
 from sqlalchemy.orm import declarative_base, sessionmaker
 
 app = Flask(__name__)
+app.config['UPLOAD_FOLDER'] = "/app/uploads"
 Base = declarative_base()
 engine = create_engine(os.getenv("SQLALCHEMY_URL"))
 Session = sessionmaker(engine)
@@ -62,10 +63,12 @@ def upload():
         return flask.send_from_directory("static", "upload.html")
     else:
         form_data = flask.request.form
-        print(type(form_data['fileup']), flush=True)  # TODO save files
         name = form_data.get("name")
         email = form_data.get("email")
-        file_url = f"/app/uploads/{str(uuid.UUID(int=random.randint(0,99999)).hex)}"
+
+        file_url = f"/app/uploads/{str(uuid.uuid4())}"
+        f = flask.request.files['fileup']
+        f.save(file_url)
 
         teams = {}
         for key in form_data.keys():
