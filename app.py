@@ -1,4 +1,6 @@
 import os
+import random
+import uuid
 
 import flask
 from flask import Flask
@@ -60,31 +62,39 @@ def upload():
         return flask.send_from_directory("static", "upload.html")
     else:
         form_data = flask.request.form
-        print(type(form_data['fileup']), flush=True)  # huh...where did the file data go?
-        print(form_data, flush=True)
-        teams = {}
+        print(type(form_data['fileup']), flush=True)  # TODO save files
         name = form_data.get("name")
+        email = form_data.get("email")
+        file_url = f"/app/uploads/{str(uuid.UUID(int=random.randint(0,99999)).hex)}"
+
+        teams = {}
         for key in form_data.keys():
             if key.startswith("teamno"):
                 team_no = form_data.get(key)
                 team_type = form_data.get("teamtype" + str(key[6:]))
                 teams.update({team_no: team_type})
-        print("Name and teams", name, teams, flush=True)
 
         # Verify if entered teams exist in database, return error if not
         team_records = []
         with Session() as session:
             for team in teams.keys():
-                print(team, flush=True)
                 entry = session.query(Team).filter_by(team_number=team, team_program=teams.get(team)).one_or_none()
-                print(entry, flush=True)
                 if entry is None:
                     return "You entered a team that does not exist! <a href=\"/upload\">Please try again.</a>"
                 else:
                     team_records.append(entry)
 
-        # Insert entry record into database
-        # Insert teamassoc records into database
+            # Insert entry record into database
+            entry_record = FormEntry(entry_name=name, entry_email=email, entry_pdf_url=file_url)
+            session.add(entry_record)
+            session.commit()
+
+            # Insert teamassoc records into database
+            for team_record in team_records:
+                new_record = FormToTeam(entry_id=entry_record.entry_id, team_id=team_record.team_id)
+                session.add(new_record)
+            session.commit()
+
         return "Your form was successfully uploaded. You may <a href=\"/upload\">upload more.</a>"
 
 
