@@ -3,7 +3,7 @@ function addDay() {
     var html =
         `<br>
             <label>Team Number:
-                <input type="text" pattern="([0-9]|[0-9]\d{1,4})">
+                <input type="text" pattern="\\d{1,5}">
             </label>
             <br>
                 <label>Team Type:

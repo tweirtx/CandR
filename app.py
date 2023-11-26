@@ -54,7 +54,7 @@ def home_page():
 
 
 @app.route('/upload', methods=["GET", "POST"])
-def upload():  # TODO implement form logic
+def upload():
     if flask.request.method == "GET":
         return flask.send_from_directory("static", "upload.html")
     else:
