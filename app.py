@@ -3,11 +3,12 @@ import os
 import flask
 from flask import Flask
 from sqlalchemy import Column, ForeignKey, Integer, String, create_engine
-from sqlalchemy.orm import declarative_base
+from sqlalchemy.orm import declarative_base, sessionmaker
 
 app = Flask(__name__)
 Base = declarative_base()
 engine = create_engine(os.getenv("SQLALCHEMY_URL"))
+Session = sessionmaker(engine)
 
 
 class Coach(Base):
@@ -61,15 +62,27 @@ def upload():
         form_data = flask.request.form
         print(type(form_data['fileup']), flush=True)  # huh...where did the file data go?
         print(form_data, flush=True)
-        teams = []
+        teams = {}
         name = form_data.get("name")
         for key in form_data.keys():
             if key.startswith("teamno"):
                 team_no = form_data.get(key)
                 team_type = form_data.get("teamtype" + str(key[6:]))
-                teams.append({team_no: team_type})
+                teams.update({team_no: team_type})
         print("Name and teams", name, teams, flush=True)
+
         # Verify if entered teams exist in database, return error if not
+        team_records = []
+        with Session() as session:
+            for team in teams.keys():
+                print(team, flush=True)
+                entry = session.query(Team).filter_by(team_number=team, team_program=teams.get(team)).one_or_none()
+                print(entry, flush=True)
+                if entry is None:
+                    return "You entered a team that does not exist! <a href=\"/upload\">Please try again.</a>"
+                else:
+                    team_records.append(entry)
+
         # Insert entry record into database
         # Insert teamassoc records into database
         return "Your form was successfully uploaded. You may <a href=\"/upload\">upload more.</a>"
