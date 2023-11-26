@@ -2,8 +2,8 @@ import os
 import uuid
 
 import flask
-from flask import Flask
-from flask_login import LoginManager
+from flask import Flask, request, session, send_from_directory, redirect, url_for
+from flask_login import LoginManager, login_required, current_user
 from sqlalchemy import Column, ForeignKey, Integer, String, create_engine
 from sqlalchemy.orm import declarative_base, sessionmaker
 
@@ -63,15 +63,15 @@ def home_page():
 
 @app.route('/upload', methods=["GET", "POST"])
 def upload():
-    if flask.request.method == "GET":
-        return flask.send_from_directory("static", "upload.html")
+    if request.method == "GET":
+        return send_from_directory("static", "upload.html")
     else:
-        form_data = flask.request.form
+        form_data = request.form
         name = form_data.get("name")
         email = form_data.get("email")
 
         file_url = f"/app/uploads/{str(uuid.uuid4())}"
-        f = flask.request.files['fileup']
+        f = request.files['fileup']
         f.save(file_url)
 
         teams = {}
@@ -105,8 +105,11 @@ def upload():
         return "Your form was successfully uploaded. You may <a href=\"/upload\">upload more.</a>"
 
 
+@login_required
 @app.route('/roster')
 def roster():
+    if not current_user.is_authenticated:
+        redirect(url_for('login'))
     # TODO implement entire page
     # Once logged in, SELECT team_id FROM team where coach_id = logged in user
     # Then return a table of *FormEntry* names where team_id in those IDs.
