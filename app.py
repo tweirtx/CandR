@@ -1,17 +1,21 @@
 import os
-import random
 import uuid
 
 import flask
 from flask import Flask
+from flask_login import LoginManager
 from sqlalchemy import Column, ForeignKey, Integer, String, create_engine
 from sqlalchemy.orm import declarative_base, sessionmaker
 
+
 app = Flask(__name__)
 app.config['UPLOAD_FOLDER'] = "/app/uploads"
+app.secret_key = os.getenv("SECRET_KEY")
 Base = declarative_base()
 engine = create_engine(os.getenv("SQLALCHEMY_URL"))
 Session = sessionmaker(engine)
+login_manager = LoginManager()
+login_manager.init_app(app)
 
 
 class Coach(Base):
